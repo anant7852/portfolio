@@ -1,7 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 //  EDIT EVERYTHING HERE. This is the only file you need to touch
-//  to make the site yours. Search for  TODO  to find the spots
-//  that still need your input (demo/code links, case-study verification).
+//  to make the site yours.
 // ─────────────────────────────────────────────────────────────
 
 export const profile = {
@@ -10,26 +9,24 @@ export const profile = {
   tagline: "Data scientist shipping production forecasting and GenAI systems.",
   // One or two sentences a recruiter reads in 5 seconds.
   blurb:
-    "I build ML that businesses actually run on — demand and price forecasting in production, financial reconciliation pipelines, and applied GenAI. Currently a Data Analyst at Zingbus, looking for Data Scientist / ML Engineer roles.",
+    "I build ML that businesses actually run on — demand and price forecasting in production, financial reconciliation pipelines, and a grounded RAG system over biomedical literature. Currently a Data Analyst at Zingbus, looking for Data Scientist / ML Engineer roles.",
   location: "New Delhi, India",
 
   links: {
     email: "anantverma163@gmail.com",
     github: "https://github.com/anant7852",
     linkedin: "https://www.linkedin.com/in/anant-verma-/",
-    // Drop your resume PDF into the /public folder with this EXACT filename
-    // (case-sensitive), or change this string to match your PDF's filename.
-    resume: "/AnantVerma_DS_Resume.pdf",
+    // Drop your REAL resume PDF into /public with this EXACT filename
+    // (case-sensitive). It is currently a placeholder stub — replace it.
+    resume: "/Anant_resume.pdf",
   },
 };
 
 // Headline numbers. Keep these to 3–4 that a recruiter can't ignore.
-// Written in the mono "data" typeface on the site.
-// TODO: confirm each of these is exactly accurate before publishing.
 export const metrics = [
   { value: "11.2%", label: "MAPE, seat-demand model", sub: "Gradient Boosting, service-level" },
   { value: "8.3%", label: "MAPE, average-selling-price model", sub: "7-day rolling forecasts" },
-  { value: "1", label: "production financial pipeline owned", sub: "GMV · GST · contribution margin" },
+  { value: "96%", label: "retrieval recall, Evidentia RAG", sub: "100% grounded · 71% abstention" },
   { value: "3", label: "OTA partners reconciled", sub: "automated, daily" },
 ];
 
@@ -39,13 +36,9 @@ export type Project = {
   kind: string; // short category label, mono
   summary: string; // one line for the card
   stack: string[];
-  // Links shown on the card. Omit any you don't have yet.
-  demo?: string; // TODO: live demo URL (yield-copilot, once deployed)
-  code?: string; // TODO: GitHub repo URL for this project's code
+  demo?: string;
+  code?: string;
   featured: boolean;
-  // Long-form case study, shown at /work/<slug>. Written as a strong
-  // first draft — VERIFY every claim before publishing (see Hard rule 2
-  // in CLAUDE.md). Cut anything you can't defend in an interview.
   caseStudy: {
     problem: string;
     approach: string[];
@@ -56,31 +49,61 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "demand-price-forecasting",
-    title: "Demand & Price Forecasting",
-    kind: "PRODUCTION ML",
+    slug: "evidentia-rag",
+    title: "Evidentia — Grounded Biomedical RAG",
+    kind: "GENAI / RAG",
     summary:
-      "Gradient Boosting models that forecast seat demand and average selling price per service, pushed daily to an ops dashboard.",
-    stack: ["Python", "Gradient Boosting", "scikit-learn", "PostgreSQL", "Google Sheets API"],
-    demo: "", // TODO: paste yield-copilot's live Vercel URL here once deployed
-    code: "", // TODO: your GitHub repo link for this project
+      "A retrieval-augmented Q&A system over 400 vaccine-efficacy papers that cites every claim and refuses to answer what the evidence doesn't support.",
+    stack: ["RAG", "Hybrid Retrieval (BM25 + dense)", "Gemini", "Next.js", "TypeScript"],
+    demo: "https://evidentia-eight.vercel.app/",
+    code: "https://github.com/anant7852/evidentia",
     featured: true,
     caseStudy: {
       problem:
-        "Operations needed to price and allocate seats before demand was known. Static rules over- and under-priced routes, leaving revenue on the table and seats empty. The team needed per-service, forward-looking estimates they could act on each morning.",
+        "A raw LLM will confidently state a medical 'fact' it never learned — an unacceptable failure mode in a clinical context. The goal was a question-answering system over real research that only makes claims it can trace to a source, and that declines when the evidence isn't there rather than guessing.",
+      approach: [
+        "Filtered ~400 COVID-19 vaccine-efficacy papers from the public CORD-19 corpus (~1.06M rows), fixing two real data bugs along the way: off-topic keyword matches, and a recency cap that collapsed the corpus into a two-month window.",
+        "Chunked and embedded the papers, then built hybrid retrieval — dense embeddings for meaning plus BM25 for exact biomedical terms (drug and vaccine names), fused with a weighting — since keyword matching genuinely outperforms pure vector search on this vocabulary.",
+        "Added query decomposition so multi-part clinical questions are split, retrieved separately, and synthesized.",
+        "Constrained generation to cite every factual sentence back to a retrieved chunk, and to abstain when the evidence doesn't cover the question.",
+        "Built an evaluation harness of 35 hand-written questions — answerable, multi-part, and deliberately unanswerable — and measured the pipeline against it.",
+      ],
+      results: [
+        "96% retrieval recall and 100% of answers fully grounded in cited sources.",
+        "71% correct abstention on unanswerable questions — most RAG systems never refuse at all, so measuring and getting this right is the hard part.",
+        "Interactive citations: every [n] marker in an answer links to its source paper.",
+        "Deployed serverless on Vercel — the committed index plus a Gemini call means no model server to host.",
+      ],
+      learnings:
+        "The headline feature isn't the chatbot, it's the refusal. A system that knows what it doesn't know is worth far more in a real deployment than one that always answers. Building the eval to measure abstention — and reporting 71% honestly rather than hiding it — taught me more than pushing any single metric higher would have.",
+    },
+  },
+  {
+    slug: "demand-price-forecasting",
+    title: "Yield Copilot — Demand & Price Forecasting",
+    kind: "PRODUCTION ML",
+    summary:
+      "Gradient Boosting models for seat demand and price, with an in-browser explorer that finds the revenue-maximising fare per departure — no model server.",
+    stack: ["Python", "Gradient Boosting", "scikit-learn", "Next.js", "TypeScript"],
+    demo: "https://yield-copilot-three.vercel.app/",
+    code: "https://github.com/anant7852/yield-copilot",
+    featured: true,
+    caseStudy: {
+      problem:
+        "Operations needed to price and allocate seats before demand was known. Static rules over- and under-priced routes, leaving revenue on the table and seats empty. The team needed per-service, forward-looking estimates they could act on.",
       approach: [
         "Framed two targets — seat demand and average selling price (ASP) — as separate regression problems, since they respond to different signals (lead time and seasonality drive demand; competition and route mix drive ASP).",
         "Engineered features from booking curves, lead time, day-of-week and seasonal effects, route and operator attributes.",
-        "Trained Gradient Boosting models, tuned for error on the metrics ops cared about rather than raw R², and validated on a rolling time-based split to avoid leakage.",
-        "Wrapped inference in a pipeline that writes 7-day, service-level forecasts to a Google Sheets dashboard the ops team already lived in.",
+        "Trained Gradient Boosting models and validated on a time-based split to avoid leakage.",
+        "For the public demo, exported the fitted trees to JSON and evaluated them client-side in TypeScript — verified to match scikit-learn's own predictions to 1e-6 — so the whole thing runs with no model server.",
       ],
       results: [
-        "~11.2% MAPE (≈3.54 MAE) on seat demand and ~8.3% MAPE (≈₹93) on ASP.",
-        "Forecasts delivered per service, 7 days out, refreshed automatically.",
-        "Gave ops a single forward-looking view instead of reacting after the fact.",
+        "~11.2% MAPE on seat demand and ~8.3% MAPE on ASP in the production work.",
+        "An interactive explorer that recomputes forecasts live and surfaces the revenue-maximising fare per departure.",
+        "Zero-latency, zero-cost inference: a static Vercel deploy with no backend.",
       ],
       learnings:
-        "The modelling was the easy 20%. The hard, valuable 80% was getting clean features out of messy operational data and delivering the output somewhere people would actually use it. A model nobody opens has zero MAPE that matters.",
+        "Demand alone doesn't set price — revenue does, and it peaks somewhere you can't eyeball. Matching the deployment to the model mattered too: tree ensembles are small enough to ship to the browser, which a transformer wouldn't be. Picking the right architecture for the model is part of the job.",
     },
   },
   {
@@ -91,20 +114,20 @@ export const projects: Project[] = [
       "Production pipeline reconciling GMV, GST and contribution margin across OTA partners — refactored from a monolith notebook into deployable services.",
     stack: ["Python", "Flask", "PostgreSQL", "MongoDB", "Redash API"],
     demo: "",
-    code: "", // TODO: your GitHub repo link for this project
+    code: "",
     featured: true,
     caseStudy: {
       problem:
         "Daily revenue reporting ran as one fragile monolithic notebook. It reconciled money across multiple online travel agency partners, but it was hard to trust, hard to change, and impossible to deploy as a service.",
       approach: [
         "Mapped the reconciliation logic end to end — GMV, GST, contribution margin, per-partner rules — and found where numbers silently diverged between notebook versions.",
-        "Broke the monolith into modular, testable components and wrapped them as Flask services so the pipeline could be deployed and scheduled rather than run by hand.",
+        "Broke the monolith into modular components and wrapped them as Flask services so the pipeline could be deployed and scheduled rather than run by hand.",
         "Rebuilt revenue-sharing logic with bracket-based, per-trip contract parsing, plus overrides for cases the old code got wrong.",
         "Pulled from PostgreSQL and MongoDB with Redash API integration to source the underlying data reliably.",
       ],
       results: [
         "A reporting pipeline that can be deployed and scheduled instead of manually executed.",
-        "Reconciliation across multiple OTA partners with the per-partner and per-contract edge cases handled explicitly.",
+        "Reconciliation across 4+ OTA partners with per-partner and per-contract edge cases handled explicitly.",
         "Revenue mismatches between versions traced and closed.",
       ],
       learnings:
@@ -113,20 +136,20 @@ export const projects: Project[] = [
   },
   {
     slug: "medcam",
-    title: "MedCam",
+    title: "Med-Cam",
     kind: "SHIPPED PRODUCT",
     summary:
-      "Android app that reads medical documents with on-device OCR and turns them into structured, plain-language explanations via an LLM.",
+      "Android app that reads medical labels with on-device OCR and turns them into structured, plain-language explanations via an LLM.",
     stack: ["Android", "Java", "Google ML Kit", "LLM API", "OCR"],
     demo: "",
-    code: "", // TODO: your GitHub repo link for this project
+    code: "https://github.com/anant7852/Med-Cam",
     featured: true,
     caseStudy: {
       problem:
-        "Medical documents — prescriptions, reports — are dense and hard for patients to read. The goal was a phone app that could photograph a document and return something a normal person understands.",
+        "Medical labels and documents are dense and hard for patients to read. The goal was a phone app that could photograph a label and return something a normal person understands.",
       approach: [
         "Used Google ML Kit for on-device OCR so text extraction was fast and worked without shipping images to a server.",
-        "Passed the extracted text to an LLM API with prompting that structured and explained the content in plain language.",
+        "Passed the extracted text to an LLM API with prompting that structured and explained the content in plain language — uses, dosage, side effects.",
         "Built the whole flow as a native Android app — capture, extract, explain — end to end.",
       ],
       results: [
@@ -137,9 +160,6 @@ export const projects: Project[] = [
         "Shipping a real app forces decisions notebooks let you dodge — latency, error states, what happens when OCR returns garbage. Those constraints are exactly what production ML work is about.",
     },
   },
-  // ── Add your GenAI / RAG project here when it's ready. The 2026 market
-  //    rewards one strong LLM project heavily. Copy the shape above.
-  //    Suggested: RAG over a domain corpus with real chunking + eval.
 ];
 
 export const approach = {
@@ -148,6 +168,6 @@ export const approach = {
   body: [
     "Most of my work lives in the unglamorous 80% — getting clean signal out of messy operational data, making pipelines deployable, and putting output where people will actually use it.",
     "I care about the metric the business feels, not the one that looks good in a notebook. Rolling time-based validation over inflated R². Correct before clever, especially where money is involved.",
-    "I'm comfortable across the stack: feature engineering and modelling, the SQL and pipelines underneath, and the deployment that turns a model into something a team runs on every morning.",
+    "I'm comfortable across the stack: feature engineering and modelling, the SQL and pipelines underneath, the RAG and LLM systems on top, and the deployment that turns a model into something a team runs on every morning.",
   ],
 };
