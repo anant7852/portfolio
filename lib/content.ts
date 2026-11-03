@@ -6,28 +6,30 @@
 export const profile = {
   name: "Anant Verma",
   // A short, specific one-liner. This sits under your name in the hero.
-  tagline: "Data scientist shipping production forecasting and GenAI systems.",
+  tagline: "Data engineer building production pipelines, with applied ML and LLM systems on top.",
   // One or two sentences a recruiter reads in 5 seconds.
   blurb:
-    "I build ML that businesses actually run on — demand and price forecasting in production, financial reconciliation pipelines, and a grounded RAG system over biomedical literature. Currently a Data Analyst at Zingbus, looking for Data Scientist / ML Engineer roles.",
+    "I build the pipelines businesses run on — Airflow DAGs, trip-level financial KPIs, EV telematics analytics — plus applied ML: gradient-boosting demand forecasting, a grounded biomedical RAG system, and a text-to-SQL agent for a production warehouse. Currently a Data Engineer at Zingbus.",
+  // Role label used in the hero eyebrow, <title> and og/twitter metadata.
+  role: "Data Engineer · ML & GenAI",
   location: "New Delhi, India",
+  heroMeta: "New Delhi, India · open to Data Engineering, Data Science & ML roles",
 
   links: {
     email: "anantverma163@gmail.com",
     github: "https://github.com/anant7852",
     linkedin: "https://www.linkedin.com/in/anant-verma-/",
-    // Drop your REAL resume PDF into /public with this EXACT filename
-    // (case-sensitive). It is currently a placeholder stub — replace it.
+    // Résumé PDF lives in /public with this EXACT filename (case-sensitive).
     resume: "/Anant_resume.pdf",
   },
 };
 
 // Headline numbers. Keep these to 3–4 that a recruiter can't ignore.
 export const metrics = [
-  { value: "11.2%", label: "MAPE, seat-demand model", sub: "Gradient Boosting, service-level" },
-  { value: "8.3%", label: "MAPE, average-selling-price model", sub: "7-day rolling forecasts" },
   { value: "96%", label: "retrieval recall, Evidentia RAG", sub: "100% grounded · 71% abstention" },
-  { value: "3", label: "OTA partners reconciled", sub: "automated, daily" },
+  { value: "₹8.37L", label: "silent double-count found & fixed", sub: "daily sales report audit" },
+  { value: "71", label: "warehouse tables the SQL agent covers", sub: "1,415 columns · sqlglot-validated" },
+  { value: "4+", label: "OTA partners in KPI pipelines", sub: "GMV · CM1 · ASP · commission" },
 ];
 
 export type Project = {
@@ -81,7 +83,7 @@ export const projects: Project[] = [
   {
     slug: "demand-price-forecasting",
     title: "Yield Copilot — Demand & Price Forecasting",
-    kind: "PRODUCTION ML",
+    kind: "APPLIED ML",
     summary:
       "Gradient Boosting models for seat demand and price, with an in-browser explorer that finds the revenue-maximising fare per departure — no model server.",
     stack: ["Python", "Gradient Boosting", "scikit-learn", "Next.js", "TypeScript"],
@@ -98,12 +100,37 @@ export const projects: Project[] = [
         "For the public demo, exported the fitted trees to JSON and evaluated them client-side in TypeScript — verified to match scikit-learn's own predictions to 1e-6 — so the whole thing runs with no model server.",
       ],
       results: [
-        "~11.2% MAPE on seat demand and ~8.3% MAPE on ASP in the production work.",
-        "An interactive explorer that recomputes forecasts live and surfaces the revenue-maximising fare per departure.",
-        "Zero-latency, zero-cost inference: a static Vercel deploy with no backend.",
+        "Models trained for seat demand and fare optimisation.",
+        "Trees exported to JSON for zero-latency in-browser inference, verified to match scikit-learn.",
+        "An interactive revenue-vs-price explorer surfacing the revenue-maximising fare per departure.",
+        "Note: the related Zingbus forecasting work is in validation ahead of rollout.",
       ],
       learnings:
         "Demand alone doesn't set price — revenue does, and it peaks somewhere you can't eyeball. Matching the deployment to the model mattered too: tree ensembles are small enough to ship to the browser, which a transformer wouldn't be. Picking the right architecture for the model is part of the job.",
+    },
+  },
+  {
+    slug: "zingbus-sql-agent",
+    title: "Zingbus SQL Agent — Text-to-SQL for a Production Warehouse",
+    kind: "LLM AGENTS",
+    summary:
+      "An LLM agent that turns plain-English metric requests into PostgreSQL for a 71-table, 1,415-column warehouse, with offline validation that catches hallucinated columns before output.",
+    stack: ["Agno", "Groq LLM", "sqlglot", "PostgreSQL", "Python"],
+    featured: true,
+    caseStudy: {
+      problem:
+        "Analysts and ops asked metric questions that needed warehouse SQL; a raw LLM hallucinates tables and columns on a schema this size.",
+      approach: [
+        "Grounded the agent through 8 tools for schema lookup and retrieval over a 24-section metric-definition guide.",
+        "Added offline SQL validation with sqlglot that checks every table and column against the parsed schema.",
+        "The validator catches hallucinated columns, unknown tables, ambiguous references and unquoted identifiers.",
+      ],
+      results: [
+        "Plain-English requests become validated PostgreSQL over 71 tables and 1,415 columns.",
+        "Invalid SQL is caught before it reaches the user.",
+      ],
+      learnings:
+        "Grounding plus deterministic validation beats prompting alone; the validator is what makes it trustworthy.",
     },
   },
   {
@@ -112,7 +139,7 @@ export const projects: Project[] = [
     kind: "DATA ENGINEERING",
     summary:
       "Production pipeline reconciling GMV, GST and contribution margin across OTA partners — refactored from a monolith notebook into deployable services.",
-    stack: ["Python", "Flask", "PostgreSQL", "MongoDB", "Redash API"],
+    stack: ["Python", "Flask", "Airflow", "PostgreSQL", "MongoDB", "Redash API"],
     demo: "",
     code: "",
     featured: true,
@@ -129,6 +156,7 @@ export const projects: Project[] = [
         "A reporting pipeline that can be deployed and scheduled instead of manually executed.",
         "Reconciliation across 4+ OTA partners with per-partner and per-contract edge cases handled explicitly.",
         "Revenue mismatches between versions traced and closed.",
+        "Audited the pipeline and fixed silent errors: an INR 8.37 lakh cancellation-charge double-count, 2,353 trips misclassified by service type, and a merge fan-out corrupting 5,324 rows.",
       ],
       learnings:
         "Financial code has to be correct before it's elegant — one wrong GST edge case is a real rupee mismatch someone has to explain. Refactoring here meant proving the new path matched the old one number-for-number before switching over.",
@@ -142,8 +170,8 @@ export const projects: Project[] = [
       "Android app that reads medical labels with on-device OCR and turns them into structured, plain-language explanations via an LLM.",
     stack: ["Android", "Java", "Google ML Kit", "LLM API", "OCR"],
     demo: "",
-    code: "https://github.com/anant7852/Med-Cam",
-    featured: true,
+    code: "",
+    featured: false,
     caseStudy: {
       problem:
         "Medical labels and documents are dense and hard for patients to read. The goal was a phone app that could photograph a label and return something a normal person understands.",
@@ -159,6 +187,74 @@ export const projects: Project[] = [
       learnings:
         "Shipping a real app forces decisions notebooks let you dodge — latency, error states, what happens when OCR returns garbage. Those constraints are exactly what production ML work is about.",
     },
+  },
+];
+
+export const workHeading = "Systems that shipped, not notebooks.";
+
+export type Role = { title: string; period: string };
+export type Experience = {
+  org: string;
+  place: string;
+  roles: Role[];
+  bullets: string[];
+};
+
+export const experience: Experience[] = [
+  {
+    org: "Zingbus",
+    place: "Gurugram",
+    roles: [
+      { title: "Data Engineer", period: "Oct 2026 – Present" },
+      { title: "Data Analyst", period: "Aug 2026 – Sep 2026" },
+      { title: "Data Analyst Intern", period: "Feb 2026 – Jul 2026" },
+    ],
+    bullets: [
+      "Build and maintain production ETL pipelines in Python, SQL and Apache Airflow computing trip-level financial KPIs (GMV, CM1, ASP, OTA commission) across 4+ OTA partners, sourcing from MongoDB, PostgreSQL and Redash and serving results through Flask APIs.",
+      "Audited the daily sales report pipeline and fixed silent data errors: an INR 8.37 lakh cancellation-charge double-count, 2,353 misclassified trips, and a merge fan-out corrupting 5,324 rows.",
+      "Built an EV fleet analytics pipeline joining BMS and JBM telematics, charging records and RFID mappings to attribute battery state of charge and kilometres to trips.",
+      "Built the operator revenue-share payout engine and a 47-column trip-level API: per-trip contracts, sliding-scale payout tiers, rolling bus-pair cycles.",
+      "Developed gradient-boosting models forecasting seat demand and ASP across routes; in validation ahead of rollout.",
+    ],
+  },
+  {
+    org: "180 Degrees Consulting, NSUT",
+    place: "",
+    roles: [{ title: "Consulting Director", period: "Jan 2025 – May 2026" }],
+    bullets: [
+      "EVA2Z (EV startup): led financial risk modelling, customer segmentation and pricing optimisation, yielding an 18% profit increase.",
+      "PLAT Exam (ed-tech): data-driven go-to-market strategy from student performance data, reaching 5,000+ rural students.",
+    ],
+  },
+];
+
+export const education = {
+  school: "Netaji Subhas University of Technology (NSUT)",
+  degree: "B.Tech Biotechnology",
+  period: "2022 – 2026",
+  grade: "CGPA 8.12/10",
+};
+
+export const skills: { group: string; items: string[] }[] = [
+  {
+    group: "Data Engineering",
+    items: ["Apache Airflow", "ETL pipelines", "Flask REST APIs", "Redash API", "Google Apps Script", "data quality & reconciliation"],
+  },
+  {
+    group: "Databases",
+    items: ["PostgreSQL", "pgAdmin", "Amazon Redshift", "MongoDB (aggregation pipelines)", "SQL"],
+  },
+  {
+    group: "ML & GenAI",
+    items: ["scikit-learn", "gradient boosting", "feature engineering", "RAG", "embeddings", "hybrid retrieval (dense + BM25)", "LLM agents (Agno)", "Gemini", "Groq", "sqlglot"],
+  },
+  {
+    group: "Analytics",
+    items: ["Python", "pandas", "NumPy", "Matplotlib", "EDA", "KPI design"],
+  },
+  {
+    group: "Tools",
+    items: ["Git", "Bitbucket", "Jupyter", "Next.js", "Vercel"],
   },
 ];
 

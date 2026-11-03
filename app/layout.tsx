@@ -22,12 +22,17 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} — Data Scientist / ML Engineer`,
+  title: `${profile.name} — ${profile.role}`,
   description: profile.tagline,
   openGraph: {
-    title: `${profile.name} — Data Scientist / ML Engineer`,
+    title: `${profile.name} — ${profile.role}`,
     description: profile.tagline,
     type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: `${profile.name} — ${profile.role}`,
+    description: profile.tagline,
   },
 };
 
