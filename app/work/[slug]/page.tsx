@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import { projects, profile } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -10,9 +12,12 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const project = projects.find((p) => p.slug === params.slug);
   if (!project) return {};
+  const title = `${project.title} — ${profile.name}`;
   return {
-    title: `${project.title} — ${profile.name}`,
+    title,
     description: project.summary,
+    openGraph: { title, description: project.summary, type: "article" },
+    twitter: { card: "summary", title, description: project.summary },
   };
 }
 
@@ -22,6 +27,8 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
   const cs = project.caseStudy;
 
   return (
+    <>
+    <SiteNav />
     <main className="wrap" style={{ paddingBottom: 80 }}>
       <Link href="/#work" className="cs-back">
         ← back to work
@@ -86,5 +93,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
         Get in touch <span className="arrow">↗</span>
       </Link>
     </main>
+    <SiteFooter />
+    </>
   );
 }

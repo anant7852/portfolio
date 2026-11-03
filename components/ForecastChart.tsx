@@ -37,14 +37,16 @@ export default function ForecastChart() {
   return (
     <div className="chart-panel" aria-label="Chart: predicted versus actual seat demand with a prediction interval">
       <div className="chart-head">
-        <span className="chart-title">seat_demand · 12-week forecast</span>
+        <span className="chart-title">
+          seat_demand · 12-week forecast <i className="chart-tag">illustrative</i>
+        </span>
         <div className="chart-legend">
           <span><i className="swatch pred" /> predicted</span>
           <span><i className="swatch act" /> actual</span>
         </div>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-hidden="true">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Illustrative chart of predicted versus actual seat demand">
         {/* horizontal gridlines */}
         {[40, 60, 80, 100].map((v) => (
           <g key={v}>
@@ -86,9 +88,7 @@ export default function ForecastChart() {
       </svg>
 
       <div className="chart-foot">
-        <span>MAPE <b>11.2%</b></span>
-        <span>MAE <b>3.54</b></span>
-        <span>refresh <b>daily</b></span>
+        <span>synthetic data · shape of the work</span>
       </div>
     </div>
   );
