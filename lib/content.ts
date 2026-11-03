@@ -205,8 +205,7 @@ export const experience: Experience[] = [
     org: "Zingbus",
     place: "Gurugram",
     roles: [
-      { title: "Data Engineer", period: "Oct 2026 – Present" },
-      { title: "Data Analyst", period: "Aug 2026 – Sep 2026" },
+      { title: "Data Engineer", period: "Aug 2026 – Present" },
       { title: "Data Analyst Intern", period: "Feb 2026 – Jul 2026" },
     ],
     bullets: [
