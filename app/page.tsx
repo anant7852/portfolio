@@ -29,7 +29,10 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div>
             <span className="eyebrow">{profile.role}</span>
-            <h1>{profile.name}</h1>
+            <h1>
+              {profile.name.split(" ")[0]}{" "}
+              <span className="serif">{profile.name.split(" ").slice(1).join(" ")}</span>
+            </h1>
             <p className="tagline">{profile.tagline}</p>
             <p className="blurb">{profile.blurb}</p>
             <div className="hero-cta">
